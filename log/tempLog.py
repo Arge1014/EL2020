@@ -34,9 +34,10 @@ def readF(tempPin) :
 	temperature = temperature * 9/5.0 +32
 	if humidity is not None and temperature is not None:
 		tempFahr = '{0:0.1f}*F'.format(temperature)
+		hum = '{1:0.1f}%'.format(temperature, humidity)
 	else:
 		print('Error Reading Sensor')
-	return tempFahr
+	return tempFahr,hum
 
 try:
 	with open("../log/tempLog.csv", "a") as log:
@@ -46,7 +47,7 @@ try:
 			if input_state == False:
 				for i in range(blinkTime):
 					oneBlink(redPin)
-				time.sleep(.2)
+				time.sleep(60)
 			data = readF(tempPin)
 			print (data)
 			log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(data)))
