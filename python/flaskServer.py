@@ -8,9 +8,28 @@
 #And is licenses under the MIT Software License
 
 #Import libraries as needed
-from flask import Flask, render_template, jsonify, Response
+from flask import Flask, render_template, jsonify, Response, request
 import sqlite3 as sql
 import json
+import time
+import RPi.GPIO as GPIO
+
+#assign GPIO pins
+redPin = 27
+greenPin = 22
+
+#LED variables -----------------------------------------------------------
+#duration of each blink
+blinkDur = .1
+#number of times to blink the LED
+blinkTime = 7
+#-------------------------------------------------------------------------
+
+#initialize the GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(redPin,GPIO.OUT)
+GPIO.setup(greenPin,GPIO.OUT)
+
 
 #Globals
 app = Flask(__name__)
@@ -32,6 +51,19 @@ def chartData():
 	for row in dataset:
 		chartData.append({"Minute": row[0], "Temperature": float(row[1])})
 	return Response(json.dumps(chartData), mimetype='application/json')
-
+	
+@app.route("/blinkLight", methods = ['GET','POST'])
+def lightUp():
+	if request.method == 'POST':
+		GPIO.output(22,True)
+		time.sleep(blinkDur)
+		GPIO.output(22,False)
+		time.sleep(blinkDur)
+	else:
+		GPIO.output(27,True)
+		time.sleep(blinkDur)
+		GPIO.output(27,False)
+		time.sleep(blinkDur)
+	return Response('yes a light did go off')
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=2020, debug=True, use_reloader=False)
