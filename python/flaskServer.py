@@ -44,12 +44,12 @@ def chartData():
 	con = sql.connect('../log/tempLog.db')
 	cur = con.cursor()
 	con.row_factory = sql.Row
-	cur.execute("SELECT Minute, Temperature FROM tempLog WHERE Temperature > 60")
+	cur.execute("SELECT Hour, Minute, Temperature FROM tempLog WHERE Temperature > 60")
 	dataset = cur.fetchall()
 	print (dataset)
 	chartData = []
 	for row in dataset:
-		chartData.append({"Minute": row[0], "Temperature": float(row[1])})
+		chartData.append({"Hour": row[0], "Minute": row[1], "Temperature": float(row[2])})
 	return Response(json.dumps(chartData), mimetype='application/json')
 	
 @app.route("/blinkLight", methods = ['GET','POST'])
@@ -64,6 +64,9 @@ def lightUp():
 		time.sleep(blinkDur)
 		GPIO.output(27,False)
 		time.sleep(blinkDur)
-	return Response('yes a light did go off')
+		return Response.status = 200
+		
+
+
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=2020, debug=True, use_reloader=False)

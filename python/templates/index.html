@@ -18,8 +18,7 @@
 		<center>
 			<div id="gauge" style="width: 250px; height: 250px"></div>
 			<form action = '/blinkLight' method = "POST">
-				<button name="27", type="submit", onclick=blinkLight()>flash a red light on my pi!</button>
-				<button name="22", type="submit", onclick=blinkLight()>flash a green light on my pi!</button>
+				<button name="22", type="submit", onclick=blinkLight()>flash a light on my pi!</button>
 			</form>
 			<div id="curve_chart" style="width: 1200px; height: 1200px"></div>
 		</center>
@@ -49,7 +48,7 @@
 				$.getJSON('/sqlData', function(chartJSON) {
 					console.log(chartJSON);
 					for (i = 0; i < chartJSON.length; i++){
-						chartData.push([new Date(chartJSON[i].Date), chartJSON[i].Temperature]);
+						chartData.push([new Date(chartJSON[i].Minute), chartJSON[i].Temperature]);
 					};
 					drawGauge();
 					drawChart();
@@ -90,7 +89,6 @@
 	        			};
 	        			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 	        			chart.draw(gdata, options);
-	        			chartTime = new Date();
 			}
 			function blinkLight(button){
 				$.POST('/blinkLight', lightUp.push(button.name))
