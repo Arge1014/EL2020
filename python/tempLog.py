@@ -52,7 +52,7 @@ def readF(tempPin) :
 	humidity, temperature = Adafruit_DHT.read_retry(tempSensor, tempPin)
 	temperature = temperature * 9/5.0 +32
 	if humidity is not None and temperature is not None:
-		tempFahr = '{0:0.1f}'.format(temperature)
+		tempFahr = '{0:0.1f}'.format(temperature, humidity)
 	else:
 		print('Error Reading Sensor')
 	return tempFahr
@@ -66,28 +66,29 @@ def readH(tempPin):
 
 	return humid
 
-def alert(data1):
+#def alert(data1):
 #	if eChk == 0:
-			Text = "Yo, wats poppin, the temperature is " + str(data1)
-			eMessage = 'Subject: {}\n\n{}'.format(Subject, Text)
-			server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-			server.sendmail(eFROM, eTO, eMessage)
-			server.quit
+
+#			Text = "Yo, wats poppin, the temperature is " + str(data1)
+#			eMessage = 'Subject: {}\n\n{}'.format(Subject, Text)
+#			server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+#			server.sendmail(eFROM, eTO, eMessage)
+#			server.quit
 		#	eChk = 1
 
-data1 = readF(tempPin)
+#data1 = readF(tempPin)
 
 try:
-	with open("../log/tempLog.csv", "a") as log:
+	with open("../log/tempLogg.csv", "a") as log:
 
 		while True:
-			if 50 <= float(data1) <= 78:
+#			if 50 <= float(data1) <= 78:
 			#	eChk = 0
-				greenLight(greenPin)
-			else:
-				alert(data1)
-				GPIO.output(greenPin, False)
-				redBlink(redPin)
+#				greenLight(greenPin)
+#			else:
+#				alert(data1)
+#				GPIO.output(greenPin, False)
+#				redBlink(redPin)
 
 			if time.time() - old_time > 59:
 				data1 = readF(tempPin)
@@ -95,7 +96,7 @@ try:
 				print('The Temperature is  '+data1+'*F')
 				print('The Humidity is '+data2+'%')
 			#	print(eChk)
-				log.write("{0},{1},{2}\n".format(time.strftime('%Y,%m,%d,%H,%M,%S'),data1,data2))
+				log.write("{0},{1},{2}\n".format(time.strftime('%d%H%M'),data1,data2))
 				log.flush()
 				os.fsync(log)
 				time.sleep(.2)

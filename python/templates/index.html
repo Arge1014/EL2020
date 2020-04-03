@@ -78,7 +78,7 @@
 	        //Draws the chart
 	        function drawChart() {
 						var gdata = new google.visualization.DataTable();
-						gdata.addColumn('date', 'Minute');
+						gdata.addColumn('date', 'Date');
 						gdata.addColumn('number', 'Temperature');
 						gdata.addRows(chartData);
 
@@ -91,7 +91,7 @@
 	        			chart.draw(gdata, options);
 			}
 			function blinkLight(button){
-				$.POST('/blinkLight', lightUp.push(button.name))
+				$.POST('/blinkLight')
 			}
 
 		</script>
