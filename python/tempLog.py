@@ -5,6 +5,7 @@ import time
 import os
 import sys
 import smtplib
+import sqlite3 as mydb
 
 #assign GPIO pins
 redPin = 27
@@ -79,8 +80,9 @@ def readH(tempPin):
 #data1 = readF(tempPin)
 
 try:
-	with open("../log/tempLogg.csv", "a") as log:
-
+	con = mydb.connect('../log/tempLog.db')
+	with con:
+		cur = con.cursor()
 		while True:
 #			if 50 <= float(data1) <= 78:
 			#	eChk = 0
@@ -96,9 +98,7 @@ try:
 				print('The Temperature is  '+data1+'*F')
 				print('The Humidity is '+data2+'%')
 			#	print(eChk)
-				log.write("{0},{1},{2}\n".format(time.strftime('%d%H%M'),data1,data2))
-				log.flush()
-				os.fsync(log)
+				cur.execute("INSERT INTO tempLog VALUES '{Date},{Temperature},{Humidity}'".format(Date = time.strftime('%Y-%m-%d %H:%M:%S'), Temperature = data1, Humidity = data2))
 				time.sleep(.2)
 				old_time = time.time()
 
