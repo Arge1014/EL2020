@@ -49,7 +49,7 @@ def chartData():
 	print (dataset)
 	chartData = []
 	for row in dataset:
-		chartData.append({"Date": float(row[0]), "Temperature": float(row[1])})
+		chartData.append({"Date": row[0], "Temperature": float(row[1])})
 	return Response(json.dumps(chartData), mimetype='application/json')
 @app.route("/blinkLight", methods = ['GET','POST'])
 def lightUp():
@@ -64,7 +64,6 @@ def lightUp():
 		GPIO.output(27,False)
 		time.sleep(blinkDur)
 	return Response(json.dumps('yayaya'), mimetype='application/json')
-
-
+#	return Response, {'Content-Type': 'text/plain'}
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=2020, debug=True, use_reloader=False)

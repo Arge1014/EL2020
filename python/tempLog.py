@@ -98,7 +98,7 @@ try:
 				print('The Temperature is  '+data1+'*F')
 				print('The Humidity is '+data2+'%')
 			#	print(eChk)
-				cur.execute("INSERT INTO tempLog VALUES '{Date},{Temperature},{Humidity}'".format(Date = time.strftime('%Y-%m-%d %H:%M:%S'), Temperature = data1, Humidity = data2))
+				cur.execute("INSERT INTO tempLog VALUES(?,?,?)", (time.strftime('%Y-%m-%d %H:%M:%S'),data1,data2))
 				time.sleep(.2)
 				old_time = time.time()
 
