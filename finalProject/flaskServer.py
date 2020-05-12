@@ -12,28 +12,39 @@ GPIO.setmode(GPIO.BCM)
 
 
 @app.route("/")
-def armed():
+def index():
+    noIntruders = True
+    soundDetected = 0
+    motionDetected = 0
+    vibrationDetected = 0
     try:
         GPIO.setup(pirPin, GPIO.IN)
         GPIO.setup(vibPin, GPIO.IN)
         GPIO.setup(soundPin, GPIO.IN)
     except:
         response = "error reading sensors"
-    GPIO.add_event_detect(pirPin, GPIO.BOTH, bouncetime=300)    #tells if pir is low or high
-    GPIO.add_event_callback(pirPin, callback)                   #assign function to GPIO Pin
-    GPIO.add_event_detect(vibPin, GPIO.BOTH, bouncetime=300)    #tells if pir is low or high
-    GPIO.add_event_callback(vibPin, callback)                   #assign function to GPIO Pin
-    GPIO.add_event_detect(soundPin, GPIO.BOTH, bouncetime=300)    #tells if pir is low or high
-    GPIO.add_event_callback(soundPin, callback)                   #assign function to GPIO Pin
-
-    while True:
-        time.sleep(1)
-
-def callback(channel):
-        if GPIO.input(channel):
-            print("Intruder Detected")
-        else:
-            print("intruder detected")
-
+    while noIntruders == True:
+        sound = GPIO.input(soundPin)
+        vibration = GPIO.input(vibPin)
+        motion = GPIO.input(pirPin)
+        if sound == 1:
+            print("Sound Detected")
+            soundDetected = 1
+            noIntruders = False
+        elif motion == 1:
+            print("Motion detected")
+            motionDetected = 1
+            noIntruders = False
+        elif vibration == 1:
+            print("Vibration Detected")
+            vibrationDetected = 1
+            noIntruders = False
+        time.sleep(.1)
+    templateData = {
+        soundDetected,
+        motionDetected,
+        vibrationDetected
+    }
+    return render_template('index.html')
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=80, debug=True)
