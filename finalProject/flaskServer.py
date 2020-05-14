@@ -28,27 +28,32 @@ def index():
             sound = GPIO.input(soundPin)
             vibration = GPIO.input(vibPin)
             motion = GPIO.input(pirPin)
+            templateData ={'String' : "No intruders detected"}
             if sound == 1:
                 print("Sound Detected")
                 soundDetected = 1
                 noIntruders = False
                 log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Sound")))
+                templateData = {
+                    'String': "Sound detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
+                }
             elif motion == 1:
                 print("Motion detected")
                 motionDetected = 1
                 noIntruders = False
                 log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Motion")))
+                templateData = {
+                    'String': "Motion detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
+                }
             elif vibration == 1:
                 print("Vibration Detected")
                 vibrationDetected = 1
                 noIntruders = False
                 log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Vibration")))
-            time.sleep(.1)
-    templateData = {
-        'soundDetected' : soundDetected,
-        'motionDetected' : motionDetected,
-        'vibrationDetected' : vibrationDetected
-    }
-    return render_template('index.html', **templateData)
+                templateData = {
+                    'String': "Vibration detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
+                }
+            time.sleep(.5)
+        return render_template('index.html', **templateData)
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=80, debug=True)
