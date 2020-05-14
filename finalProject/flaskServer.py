@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import datetime
 import time
+import smtplib
 import RPi.GPIO as GPIO
 app = Flask(__name__)
 
@@ -9,11 +10,16 @@ pirPin = 17
 vibPin = 27
 soundPin = 22
 GPIO.setmode(GPIO.BCM)
+eFROM = "nickarge1014@gmail.com"
+eTO = "9143643339@vtext.com"
+Subject = "Intruder Detected"
+server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 
 
 @app.route("/")
 def index():
     noIntruders = True
+    textSent = False
     soundDetected = 0
     motionDetected = 0
     vibrationDetected = 0
@@ -23,7 +29,7 @@ def index():
         GPIO.setup(soundPin, GPIO.IN)
     except:
         response = "error reading sensors"
-    with open("../log/detectionlog.csv", "a") as log:
+    with open("log/detectionlog.csv", "a") as log:
         while noIntruders == True:
             sound = GPIO.input(soundPin)
             vibration = GPIO.input(vibPin)
@@ -33,26 +39,41 @@ def index():
                 print("Sound Detected")
                 soundDetected = 1
                 noIntruders = False
-                log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Sound")))
+                log.write("{0} {1}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"),str("Sound")))
                 templateData = {
                     'String': "Sound detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
                 }
+                if textSent == False:
+                    eMessage = 'Subject: {}\n\n{}'.format(Subject, "Sound detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
+                    textSent = True
             elif motion == 1:
                 print("Motion detected")
                 motionDetected = 1
                 noIntruders = False
-                log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Motion")))
+                log.write("{0} {1}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"),str("Motion")))
                 templateData = {
                     'String': "Motion detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
                 }
+                if textSent == False:
+                    eMessage = 'Subject: {}\n\n{}'.format(Subject, "Motion detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
+                    textSent = True
             elif vibration == 1:
                 print("Vibration Detected")
                 vibrationDetected = 1
                 noIntruders = False
-                log.write("{0}{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str("Vibration")))
+                log.write("{0} {1}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"),str("Vibration")))
                 templateData = {
                     'String': "Vibration detected at {0}\n".format(time.strftime("%m-%d-%Y %H:%M:%S"))
                 }
+                if textSent == False:
+                    eMessage = 'Subject: {}\n\n{}'.format(Subject, "Vibration detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
+                    textSent = True
             time.sleep(.5)
         return render_template('index.html', **templateData)
 if __name__ == "__main__":
