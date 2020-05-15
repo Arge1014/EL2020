@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, Response, request
 import datetime
 import time
+import json
 import smtplib
 import RPi.GPIO as GPIO
 app = Flask(__name__)
@@ -9,11 +10,12 @@ app = Flask(__name__)
 pirPin = 17
 vibPin = 27
 soundPin = 22
+buzzerPin = 14
 GPIO.setmode(GPIO.BCM)
 eFROM = "nickarge1014@gmail.com"
 eTO = "9143643339@vtext.com"
 Subject = "Intruder Detected"
-server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+#server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 
 
 @app.route("/")
@@ -45,8 +47,8 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Sound detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                    server.sendmail(eFROM, eTO, eMessage)
+                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                  #  server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             elif motion == 1:
                 print("Motion detected")
@@ -58,8 +60,8 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Motion detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                    server.sendmail(eFROM, eTO, eMessage)
+                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                   # server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             elif vibration == 1:
                 print("Vibration Detected")
@@ -71,10 +73,18 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Vibration detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                    server.sendmail(eFROM, eTO, eMessage)
+                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                   # server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             time.sleep(.5)
         return render_template('index.html', **templateData)
+
+@app.route("/buzzer", methods = ['GET', 'POST'])
+def alarm():
+    GPIO.setup(buzzerPin, GPIO.OUT)
+    GPIO.output(buzzerPin, False)
+    if request.method == 'POST':
+        GPIO.output(buzzerPin, True)
+    return Response(json.dumps('buzzer alarm active'), mimetype='application/json')
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=80, debug=True)

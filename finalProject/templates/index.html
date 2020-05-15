@@ -7,5 +7,12 @@
     <h1>RPi GPIO control</h1>
     <h2>Sensor status</h2>
     <h3>{{String}}</h3>
+	<form action = '/buzzer' method = "POST">
+		<button onclick=buzzer()>set off alarm</button>
+	</form>
+	<script type='text/javascript'>
+		function buzzer(button){
+			$POST('/buzzer')
+		}
 </body>
 </html>
