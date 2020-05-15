@@ -84,7 +84,8 @@ def alarm():
     GPIO.setup(buzzerPin, GPIO.OUT)
     GPIO.output(buzzerPin, False)
     if request.method == 'POST':
-        GPIO.output(buzzerPin, True)
-    return Response(json.dumps('buzzer alarm active'), mimetype='application/json')
+        while True:
+            GPIO.output(buzzerPin, True)
+            return Response(json.dumps('buzzer alarm active'), mimetype='application/json')
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=80, debug=True)
