@@ -15,7 +15,7 @@ GPIO.setmode(GPIO.BCM)
 eFROM = "nickarge1014@gmail.com"
 eTO = "9143643339@vtext.com"
 Subject = "Intruder Detected"
-#server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 
 
 @app.route("/")
@@ -47,8 +47,8 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Sound detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                  #  server.sendmail(eFROM, eTO, eMessage)
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             elif motion == 1:
                 print("Motion detected")
@@ -60,8 +60,8 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Motion detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                   # server.sendmail(eFROM, eTO, eMessage)
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             elif vibration == 1:
                 print("Vibration Detected")
@@ -73,8 +73,8 @@ def index():
                 }
                 if textSent == False:
                     eMessage = 'Subject: {}\n\n{}'.format(Subject, "Vibration detected at {0}\ngo to 10.0.0.53 to set off alarm\n".format(time.strftime("%H:%M:%S")))
-                    #server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
-                   # server.sendmail(eFROM, eTO, eMessage)
+                    server.login("nickarge1014@gmail.com", "clguzzwndxwrceqg")
+                    server.sendmail(eFROM, eTO, eMessage)
                     textSent = True
             time.sleep(.5)
         return render_template('index.html', **templateData)
